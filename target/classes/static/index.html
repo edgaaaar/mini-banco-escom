@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Banco Distribuido - Panel de Observabilidad</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #0f172a; color: #f8fafc; margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1e293b; padding-bottom: 15px; margin-bottom: 20px; }
+        .header h1 { margin: 0; font-size: 24px; color: #38bdf8; }
+        .grid-nodos { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+        .card-nodo { background-color: #1e293b; border-radius: 10px; padding: 20px; border: 1px solid #334155; }
+        .card-nodo h2 { margin-top: 0; font-size: 18px; border-bottom: 1px solid #334155; padding-bottom: 8px; display: flex; justify-content: space-between; }
+        .nodo-online { color: #10b981; }
+        .nodo-offline { color: #ef4444; }
+        .metrica-item { display: flex; justify-content: space-between; margin: 12px 0; font-size: 14px; }
+        .metrica-valor { font-weight: bold; color: #e2e8f0; }
+        .progress-bar-container { background-color: #0f172a; border-radius: 5px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden; }
+        .progress-bar { background-color: #38bdf8; height: 100%; width: 0%; transition: width 0.5s ease; }
+        .progress-ram { background-color: #a855f7; }
+        .progress-disco { background-color: #eab308; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <h1>Mini Banco Distribuido — Panel de Observabilidad</h1>
+            <p style="margin: 5px 0 0 0; color: #94a3b8; font-size: 14px;">Modo reactivo activo</p>
+        </div>
+    </div>
+
+    <div class="grid-nodos">
+        <div class="card-nodo" id="nodo-card-1">
+            <h2>Nodo 1 <span id="status-1" class="nodo-offline">● Offline</span></h2>
+            <div class="metrica-item"><span>Cuentas:</span> <span class="metrica-valor" id="cuentas-1">0</span></div>
+            <div class="metrica-item"><span>Saldo total visto:</span> <span class="metrica-valor" id="saldo-1">$0.00</span></div>
+            <div class="metrica-item"><span>Transferencias locales:</span> <span class="metrica-valor" id="tx-1">0</span></div>
+            <div class="metrica-item"><span>Lecturas de saldo:</span> <span class="metrica-valor" id="lecturas-1">0</span></div>
+            <div class="metrica-item"><span>Última secuencia aplicada:</span> <span class="metrica-valor" id="secuencia-1">0</span></div>
+            
+            <div style="margin-top: 15px;">
+                <div class="metrica-item" style="margin:0;"><span>CPU:</span> <span class="metrica-valor" id="cpu-text-1">0%</span></div>
+                <div class="progress-bar-container"><div class="progress-bar" id="cpu-bar-1"></div></div>
+            </div>
+            <div style="margin-top: 10px;">
+                <div class="metrica-item" style="margin:0;"><span>RAM:</span> <span class="metrica-valor" id="ram-text-1">0%</span></div>
+                <div class="progress-bar-container"><div class="progress-bar progress-ram" id="ram-bar-1"></div></div>
+            </div>
+            <div style="margin-top: 10px;">
+                <div class="metrica-item" style="margin:0;"><span>Disco:</span> <span class="metrica-valor" id="disco-text-1">0%</span></div>
+                <div class="progress-bar-container"><div class="progress-bar progress-disco" id="disco-bar-1"></div></div>
+            </div>
+        </div>
+
+        <div class="card-nodo" id="nodo-card-2">
+            <h2>Nodo 2 <span id="status-2" class="nodo-offline">● Offline</span></h2>
+            <div class="metrica-item"><span>Cuentas:</span> <span class="metrica-valor" id="cuentas-2">0</span></div>
+            <div class="metrica-item"><span>Saldo total visto:</span> <span class="metrica-valor" id="saldo-2">$0.00</span></div>
+            <div class="metrica-item"><span>Transferencias locales:</span> <span class="metrica-valor" id="tx-2">0</span></div>
+            <div class="metrica-item"><span>Lecturas de saldo:</span> <span class="metrica-valor" id="lecturas-2">0</span></div>
+            <div class="metrica-item"><span>Última secuencia aplicada:</span> <span class="metrica-valor" id="secuencia-2">0</span></div>
+            
+            <div style="margin-top: 15px;">
+                <div class="metrica-item" style="margin:0;"><span>CPU:</span> <span class="metrica-valor" id="cpu-text-2">0%</span></div>
+                <div class="progress-bar-container"><div class="progress-bar" id="cpu-bar-2"></div></div>
+            </div>
+            <div style="margin-top: 10px;">
+                <div class="metrica-item" style="margin:0;"><span>RAM:</span> <span class="metrica-valor" id="ram-text-2">0%</span></div>
+                <div class="progress-bar-container"><div class="progress-bar progress-ram" id="ram-bar-2"></div></div>
+            </div>
+            <div style="margin-top: 10px;">
+                <div class="metrica-item" style="margin:0;"><span>Disco:</span> <span class="metrica-valor" id="disco-text-2">0%</span></div>
+                <div class="progress-bar-container"><div class="progress-bar progress-disco" id="disco-bar-2"></div></div>
+            </div>
+        </div>
+
+        <div class="card-nodo" id="nodo-card-3">
+            <h2>Nodo 3 <span id="status-3" class="nodo-offline">● Offline</span></h2>
+            <div class="metrica-item"><span>Cuentas:</span> <span class="metrica-valor" id="cuentas-3">0</span></div>
+            <div class="metrica-item"><span>Saldo total visto:</span> <span class="metrica-valor" id="saldo-3">$0.00</span></div>
+            <div class="metrica-item"><span>Transferencias locales:</span> <span class="metrica-valor" id="tx-3">0</span></div>
+            <div class="metrica-item"><span>Lecturas de saldo:</span> <span class="metrica-valor" id="lecturas-3">0</span></div>
+            <div class="metrica-item"><span>Última secuencia aplicada:</span> <span class="metrica-valor" id="secuencia-3">0</span></div>
+            
+            <div style="margin-top: 15px;">
+                <div class="metrica-item" style="margin:0;"><span>CPU:</span> <span class="metrica-valor" id="cpu-text-3">0%</span></div>
+                <div class="progress-bar-container"><div class="progress-bar" id="cpu-bar-3"></div></div>
+            </div>
+            <div style="margin-top: 10px;">
+                <div class="metrica-item" style="margin:0;"><span>RAM:</span> <span class="metrica-valor" id="ram-text-3">0%</span></div>
+                <div class="progress-bar-container"><div class="progress-bar progress-ram" id="ram-bar-3"></div></div>
+            </div>
+            <div style="margin-top: 10px;">
+                <div class="metrica-item" style="margin:0;"><span>Disco:</span> <span class="metrica-valor" id="disco-text-3">0%</span></div>
+                <div class="progress-bar-container"><div class="progress-bar progress-disco" id="disco-bar-3"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // IPS DE LAS VIRTUAL MACHINES
+const IPs = {
+            1: "34.30.110.59:8080",
+            2: "35.225.247.10:7001",
+            3: "34.60.59.119:7002"
+        };
+
+        async function consultarMetricasNodo(id) {
+            try {
+                const respuesta = await fetch(`http://${IPs[id]}/api/metrics`, { method: 'GET' });
+                if (!respuesta.ok) throw new Error("Offline");
+                const datos = await respuesta.json();
+                actualizarPantallaNodo(id, datos);
+            } catch (error) {
+                ponerNodoOffline(id);
+            }
+        }
+
+        function actualizarPantallaNodo(id, datos) {
+            const statusLabel = document.getElementById(`status-${id}`);
+            statusLabel.textContent = "● Online";
+            statusLabel.className = "nodo-online";
+
+            document.getElementById(`cuentas-${id}`).textContent = datos.totalCuentas.toLocaleString();
+            document.getElementById(`saldo-${id}`).textContent = "$" + datos.saldoTotal.toLocaleString('es-MX', { minimumFractionDigits: 2 });
+            document.getElementById(`tx-${id}`).textContent = datos.transferenciasRealizadas.toLocaleString();
+            document.getElementById(`lecturas-${id}`).textContent = datos.lecturasRealizadas.toLocaleString();
+            document.getElementById(`secuencia-${id}`).textContent = datos.ultimaSecuencia.toLocaleString();
+
+            document.getElementById(`cpu-text-${id}`).textContent = datos.usoCpu + "%";
+            document.getElementById(`cpu-bar-${id}`).style.width = datos.usoCpu + "%";
+
+            document.getElementById(`ram-text-${id}`).textContent = datos.usoRam + "%";
+            document.getElementById(`ram-bar-${id}`).style.width = datos.usoRam + "%";
+
+            document.getElementById(`disco-text-${id}`).textContent = datos.usoDisco + "%";
+            document.getElementById(`disco-bar-${id}`).style.width = datos.usoDisco + "%";
+        }
+
+        function ponerNodoOffline(id) {
+            const statusLabel = document.getElementById(`status-${id}`);
+            statusLabel.textContent = "● Offline";
+            statusLabel.className = "nodo-offline";
+            
+            document.getElementById(`cpu-bar-${id}`).style.width = "0%";
+            document.getElementById(`ram-bar-${id}`).style.width = "0%";
+            document.getElementById(`disco-bar-${id}`).style.width = "0%";
+        }
+
+        function cicloReactivo() {
+            consultarMetricasNodo(1);
+            consultarMetricasNodo(2);
+            consultarMetricasNodo(3);
+        }
+
+        // Ejecución automática estrictamente cada 3 segundos (3000 milisegundos)
+        setInterval(cicloReactivo, 3000);
+        cicloReactivo();
+    </script>
+</body>
+</html>
