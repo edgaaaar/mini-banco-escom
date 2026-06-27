@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api")
 public class AuthController {
