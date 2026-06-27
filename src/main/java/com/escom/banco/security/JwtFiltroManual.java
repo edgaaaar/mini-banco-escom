@@ -1,50 +1,33 @@
 package com.escom.banco.security;
 
-import io.jsonwebtoken.Jwts;
-import jakarta.servlet.*;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
-public class JwtFiltroManual implements Filter {
-
-    private final String claveSecreta = System.getenv("JWT_SECRET");
+public class JwtFiltroManual extends OncePerRequestFilter {
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-        
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        String path = httpRequest.getRequestURI();
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        return "/api/metrics".equals(path);
+    }
 
-        if (path.equals("/api/register") || path.equals("/api/login") || path.contains("/api/metrics")) {
-            chain.doFilter(request, response);
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        
+        String authHeader = request.getHeader("Authorization");
+        
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Acceso denegado, requiere JWT valido\"}");
             return;
         }
-
-        String authHeader = httpRequest.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            try {
-                String usuario = Jwts.parser()
-                        .setSigningKey(claveSecreta)
-                        .parseClaimsJws(token)
-                        .getBody()
-                        .getSubject();
-
-                if (usuario != null) {
-                    httpRequest.setAttribute("usuarioAutenticado", usuario);
-                    chain.doFilter(request, response);
-                    return;
-                }
-            } catch (Exception e) {
-                System.out.println("Error de validacion de token: " + e.getMessage());
-            }
-        }
-
-        httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        httpResponse.setContentType("application/json");
-        httpResponse.getWriter().write("{\"error\": \"Acceso denegado, requiere JWT valido\"}");
+        
+        filterChain.doFilter(request, response);
     }
 }
