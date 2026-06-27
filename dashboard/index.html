@@ -8,7 +8,6 @@
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #0f172a; color: #f8fafc; margin: 0; padding: 20px; }
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1e293b; padding-bottom: 15px; margin-bottom: 20px; }
         .header h1 { margin: 0; font-size: 24px; color: #38bdf8; }
-        .status-badge { background-color: #10b981; color: #fff; padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: bold; }
         .grid-nodos { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
         .card-nodo { background-color: #1e293b; border-radius: 10px; padding: 20px; border: 1px solid #334155; }
         .card-nodo h2 { margin-top: 0; font-size: 18px; border-bottom: 1px solid #334155; padding-bottom: 8px; display: flex; justify-content: space-between; }
@@ -27,14 +26,13 @@
     <div class="header">
         <div>
             <h1>Mini Banco Distribuido — Panel de Observabilidad</h1>
-            <p style="margin: 5px 0 0 0; color: #94a3b8; font-size: 14px;">Modo reactivo activo (Sincronización en tiempo real 1.5s)</p>
+            <p style="margin: 5px 0 0 0; color: #94a3b8; font-size: 14px;">Modo reactivo activo</p>
         </div>
-        <div class="status-badge" id="global-status">SISTEMA OPERATIVO</div>
     </div>
 
     <div class="grid-nodos">
         <div class="card-nodo" id="nodo-card-1">
-            <h2>Nodo 1 (Líder) <span id="status-1" class="nodo-offline">● Offline</span></h2>
+            <h2>Nodo 1 <span id="status-1" class="nodo-offline">● Offline</span></h2>
             <div class="metrica-item"><span>Cuentas:</span> <span class="metrica-valor" id="cuentas-1">0</span></div>
             <div class="metrica-item"><span>Saldo total visto:</span> <span class="metrica-valor" id="saldo-1">$0.00</span></div>
             <div class="metrica-item"><span>Transferencias locales:</span> <span class="metrica-valor" id="tx-1">0</span></div>
@@ -56,7 +54,7 @@
         </div>
 
         <div class="card-nodo" id="nodo-card-2">
-            <h2>Nodo 2 (Réplica 1) <span id="status-2" class="nodo-offline">● Offline</span></h2>
+            <h2>Nodo 2 <span id="status-2" class="nodo-offline">● Offline</span></h2>
             <div class="metrica-item"><span>Cuentas:</span> <span class="metrica-valor" id="cuentas-2">0</span></div>
             <div class="metrica-item"><span>Saldo total visto:</span> <span class="metrica-valor" id="saldo-2">$0.00</span></div>
             <div class="metrica-item"><span>Transferencias locales:</span> <span class="metrica-valor" id="tx-2">0</span></div>
@@ -78,7 +76,7 @@
         </div>
 
         <div class="card-nodo" id="nodo-card-3">
-            <h2>Nodo 3 (Réplica 2) <span id="status-3" class="nodo-offline">● Offline</span></h2>
+            <h2>Nodo 3 <span id="status-3" class="nodo-offline">● Offline</span></h2>
             <div class="metrica-item"><span>Cuentas:</span> <span class="metrica-valor" id="cuentas-3">0</span></div>
             <div class="metrica-item"><span>Saldo total visto:</span> <span class="metrica-valor" id="saldo-3">$0.00</span></div>
             <div class="metrica-item"><span>Transferencias locales:</span> <span class="metrica-valor" id="tx-3">0</span></div>
@@ -101,11 +99,11 @@
     </div>
 
     <script>
-        // REEMPLAZAR ESTAS IPS CON LAS NUEVAS IPS ASIGNADAS EN GOOGLE CLOUD VM
+        // IPS DE LAS VIRTUAL MACHINES
         const IPs = {
-            1: "35.222.109.88:7000",
-            2: "34.46.220.26:7001",
-            3: "136.119.212.234:7002"
+            1: "136.112.209.60:7000",
+            2: "35.225.247.10:7001",
+            3: "34.60.59.119:7002"
         };
 
         async function consultarMetricasNodo(id) {
@@ -156,8 +154,8 @@
             consultarMetricasNodo(3);
         }
 
-        // Ejecucion reactiva continua cada 1.5 segundos
-        setInterval(cicloReactivo, 1500);
+        // Ejecución automática estrictamente cada 3 segundos (3000 milisegundos)
+        setInterval(cicloReactivo, 3000);
         cicloReactivo();
     </script>
 </body>
